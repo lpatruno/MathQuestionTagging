@@ -1,0 +1,5 @@
+Order in which to run scripts:
+
+  1. python separate_tagged_untagged_content.py
+  2. python extract_question_tag_info.py 
+  3. python find_keywords_in_text.py 
