@@ -84,14 +84,14 @@ def main():
     # Writing tagged and untagged file paths to different txt files for easy access
     print 'Writing tagged and untagged paths to file for easy access'
     
-    tagged_file = 'tagged_paths.txt'
+    tagged_file = '../data/tagged_paths.txt'
     print 'Writing tagged content to %s' % tagged_file
     tagged_write_file = open(tagged_file, mode='w')
     for f in tagged_problems:
         tagged_write_file.write(f + '\n')
     tagged_write_file.close()
 
-    untagged_file = 'untagged_paths.txt'
+    untagged_file = '../data/untagged_paths.txt'
     print 'Writing untagged content to %s \n' % untagged_file
     untagged_write_file = open(untagged_file, mode='w')
     for f in untagged_problems:
