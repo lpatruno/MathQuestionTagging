@@ -38,7 +38,7 @@ def get_keywords(question_file_lines):
     return list(set(keyword_list))
     
     
-def get_question_text(question_file_lines):
+def get_question_text(question_file_lines, index = -1):
     """
     This function accepts file contents of a tagged question file and 
     extracts and returns the question text.
@@ -48,17 +48,26 @@ def get_question_text(question_file_lines):
         - string of question text
     """
     EOT = "EOT"
+    EOF = 'EOF'
     BR = "$BR"
     BEGIN_TEXT = "BEGIN_TEXT"
     END_TEXT = "END_TEXT"
+    TEXT_EV2 = 'TEXT(EV2(<<EOF))'
 
     question_text = ''
     indices = []
-
-    for i, line in enumerate(question_file_lines):    
-        if ( EOT in line or BR in line or BEGIN_TEXT in line or END_TEXT in line):
-            indices.append(i)
-            
+    
+    # Take care of certain questions with different file formats
+    # This was notices after scanning through the questions
+    if index == -1:
+        for i, line in enumerate(question_file_lines):    
+            if ( EOT in line or BR in line or BEGIN_TEXT in line or END_TEXT in line or TEXT_EV2 in line or EOF in line):
+                indices.append(i)
+    else:
+        for i, line in enumerate(question_file_lines):
+            if ('TEXT' in line or 'ANS' in line):
+                indices.append(i)
+        
     if indices:
         start_line = min(indices)
         end_line = max(indices)
@@ -131,30 +140,50 @@ def main():
 
     for i, path in enumerate(tagged_paths):
         
-        question_file_handle = open(path, mode='r')
-        question_file_lines = question_file_handle.readlines()
-        question_file_handle.close()
+        # These files contain corrupted questions. Do not include them
+        # Noticed after inspection
+        if i not in [1849, 1850, 3330, 7950, 15251, 15252, 15253, 15453, 15454, 15455, \
+                    15456, 15457, 15458, 15459, 15460, 15461, 15462, 15463, 15464, 15465,\
+                    15466, 15467, 15468, 15469, 15470, 15471, 15472, 15473, 15474, 15475, \
+                    15476, 15477, 15478, 15479, 18634, 18635, 18636]:
+        
+            question_file_handle = open(path, mode='r')
+            question_file_lines = question_file_handle.readlines()
+            question_file_handle.close()
     
-        keywords =  get_keywords(question_file_lines)
-        question_text = get_question_text(question_file_lines)
-    
-        latex = get_latex(question_text)
-    
-        # Update the kquestion_info data structure
-        question_dict = {'question_file_path' : path, \
-                         'question_text' : question_text, \
-                         'latex_expressions' : latex }
-        question_info['questions'].append( question_dict )
-    
-        # Update the keyword_info data structure
-        # Include file path to act as a foreign key between the keyword_info 
-        # and question_info structs
-        for keyword in keywords:
-            if keyword in keyword_info:
-                keyword_info[keyword]['count'] += 1
-                keyword_info[keyword]['question_file_path'].append( path )
+            # Extract question information
+            keywords =  get_keywords(question_file_lines)
+        
+            # After running this script I noticed there were several questions whose text were blank
+            # Some of these were misformatted questions
+            # These below were just formatted differently.
+            # Hence, changed the get_question_text file to incorporate the different format
+        
+            if i in [5269, 5792, 8479, 8519, 8758, 8769, 8784, 8984, 8989, 8990, 8991, 8992, 9552, 9733, 10372, 15834]: 
+                question_text = get_question_text(question_file_lines, i)
             else:
-                keyword_info[keyword] = {'count' : 1, 'question_file_path' : [path]}
+                question_text = get_question_text(question_file_lines)
+        
+            latex = get_latex(question_text)
+    
+            # Update the question_info data structure
+            question_dict = {'question_file_path' : path, \
+                         'question_text' : question_text, \
+                         'latex_expressions' : latex, \
+                          'keywords' : keywords }
+                                         
+            question_info['questions'].append( question_dict )
+    
+    
+            # Update the keyword_info data structure
+            # Include file path to act as a foreign key between the keyword_info 
+            # and question_info structs
+            for keyword in keywords:
+                if keyword in keyword_info:
+                    keyword_info[keyword]['count'] += 1
+                    keyword_info[keyword]['question_file_path'].append( path )
+                else:
+                    keyword_info[keyword] = {'count' : 1, 'question_file_path' : [path]}
             
     t1 = time()
 
@@ -181,21 +210,24 @@ def main():
     q_paths = []
     q_text = []
     q_latex = []
+    q_keywords = []
 
     for q in question_info['questions']:
         q_paths.append( q['question_file_path'] )
         q_text.append( q['question_text'] )
         q_latex.append( q['latex_expressions'] )
-    
+        q_keywords.append( q['keywords']  )
+        
     question_df = pd.DataFrame({'question_text': q_text, \
                                'latex_expressions': q_latex, \
-                               'question_file_path': q_paths})
+                               'question_file_path': q_paths, \
+                               'keywords' : q_keywords })
                                
     # Yay let's persist these structures
     tag_info_data = '../data/tag_info_data.csv'
     question_info_data = '../data/question_info_data.csv'
     
-    keyword_df.to_csv(question_info_data)
+    question_df.to_csv(question_info_data)
     keyword_df.to_csv(tag_info_data)
     
     print 'Tag data persisted to file: %s' % tag_info_data
