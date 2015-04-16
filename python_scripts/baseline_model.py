@@ -16,7 +16,7 @@ from sklearn.svm import LinearSVC
 from sklearn.metrics import jaccard_similarity_score
 from sklearn.metrics import hamming_loss
 
-import BaselineFeatureExtractor
+import BaselineFeatureExtractor()
 
 
 def main():
