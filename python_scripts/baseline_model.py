@@ -87,19 +87,21 @@ def main():
         recall.append( recall_score(y_true, y_predict, average='micro') )
         f1.append( f1_score(y_true, y_predict, average='micro')  )
         
-        info_df = pd.DataFrame({ 'num_feats': num_feats, \
-                                'num_train': num_train, \
-                                'num_test' : num_test, \
-                                'train_feat_time': train_feature_time, \
-                                'test_feat_time': test_feature_time, \
-                                'model_time': t1-t0, \
-                                'jaccard': jaccard, \
-                                'hamming_loss': hamming, \
-                                'precision': precision, \
-                                'recall': recall, \
-                                'f1': f1})
+    
+    
+    info_df = pd.DataFrame({ 'num_feats': num_feats, \
+                            'num_train': num_train, \
+                            'num_test' : num_test, \
+                            'train_feat_time': train_feature_time, \
+                            'test_feat_time': test_feature_time, \
+                            'model_time': t1-t0, \
+                            'jaccard': jaccard, \
+                            'hamming_loss': hamming, \
+                            'precision': precision, \
+                            'recall': recall, \
+                            'f1': f1})
      
-        print(info_df)
+    print(info_df)
         
     
 if __name__ == '__main__':
