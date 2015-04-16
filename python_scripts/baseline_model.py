@@ -94,7 +94,7 @@ def main():
                             'num_test' : num_test, \
                             'train_feat_time': train_feature_time, \
                             'test_feat_time': test_feature_time, \
-                            'model_time': t1-t0, \
+                            'model_time': model_train_time, \
                             'jaccard': jaccard, \
                             'hamming_loss': hamming, \
                             'precision': precision, \
