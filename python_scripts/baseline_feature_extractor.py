@@ -4,6 +4,23 @@ from time import time
 import ast
 
 class BaselineFeatureExtractor():
+    """
+    This class extracts the basic features from the WebWorK questions in the Open Problem Library.
+    
+    These are just the occurrence of keywords within the question text itself.
+    
+    Sample usage:
+    
+        bfe = BaselineFeatureExtractor(top_n_tags)
+
+        x_train, y_train, train_zero_count, train_feat_extract_time = bfe.x_y_train(x_train_raw, y_train_raw)
+        y_true, test_zero_count, test_feat_extract_time = bfe.y_true(y_test_raw)
+
+        clf_LinearSVC = OneVsRestClassifier(LinearSVC()).fit(x_train, y_train)
+        y_predict = clf_LinearSVC.predict( y_true )
+
+        j_score = jaccard_similarity_score(y_true, y_predict)
+    """
     def __init__(self, top_keywords):
         """
         @params
