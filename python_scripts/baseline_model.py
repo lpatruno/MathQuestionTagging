@@ -16,6 +16,9 @@ from sklearn.svm import LinearSVC
 from sklearn.metrics import jaccard_similarity_score
 from sklearn.metrics import hamming_loss
 from sklearn.metrics import classification_report
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import f1_score
 
 from baseline_feature_extractor import BaselineFeatureExtractor
 
@@ -52,6 +55,9 @@ def main():
     model_train_time = []
     jaccard = []
     hamming = []
+    precision = []
+    recall = []
+    f1 = []
 
     for n in num_feats:
     
@@ -67,27 +73,33 @@ def main():
     
         y_predict = clf_LinearSVC.predict( y_true )
     
-        j_score = jaccard_similarity_score(y_true, y_predict)
-        h_score = hamming_loss(y_true, y_predict)
-    
+        # Basic stats
         num_train.append(len(x_train))
         num_test.append(len(y_true))
         train_feature_time.append( train_feat_extract_time )
         test_feature_time.append( test_feat_extract_time )
         model_train_time.append( t1-t0 )
-        jaccard.append( j_score )
-        hamming.append( h_score )
-     
-    # Print report    
-    print 'n  num_train  num_test  train_feat_time  test_feat_time  model_time  jaccard  hamming_loss \n'   
-    for i in range( len(num_feats)):
-        print '%d \t %d \t %d \t %f \t %f \t %f \t %f \t %f' % \
-        (num_feats[i], num_train[i], num_test[i], train_feature_time[i], test_feature_time[i], model_train_time[i], \
-         100*jaccard[i], 100*hamming[i])
-         
-    # Print classification report
-    print(classification_report(y_true, y_predict))
         
+        # Evaluation metrics
+        jaccard.append( jaccard_similarity_score(y_true, y_predict) )
+        hamming.append( hamming_loss(y_true, y_predict) )
+        precision.append( precision_score(y_true, y_predict, average='micro') )
+        recall.append( recall_score(y_true, y_predict, average='micro') )
+        f1.append( f1_score(y_true, y_predict, average='micro')  )
+        
+        info_df = pd.DataFrame({ 'num_feats': num_feats, \
+                                'num_train': num_train, \
+                                'num_test' : num_test, \
+                                'train_feat_time': train_feature_time, \
+                                'test_feat_time': test_feature_time, \
+                                'model_time': model_time, \
+                                'jaccard': jaccard, \
+                                'hamming_loss': hamming, \
+                                'precision': precision, \
+                                'recall': recall, \
+                                'f1': f1})
+     
+        print(info_df)
         
     
 if __name__ == '__main__':
