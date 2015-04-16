@@ -15,6 +15,7 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.metrics import jaccard_similarity_score
 from sklearn.metrics import hamming_loss
+from sklearn.metrics import classification_report
 
 from baseline_feature_extractor import BaselineFeatureExtractor
 
@@ -41,7 +42,8 @@ def main():
         y_test_raw.append( ast.literal_eval(test[i][0]) )
         
     # Train clasifier and predict keywords
-    num_feats = [50, 100, 200, 500, 1000, tag_info.shape[0]]
+    num_feats = [50]
+    #num_feats = [50, 100, 200, 500, 1000, tag_info.shape[0]]
 
     num_train = []
     num_test = []
@@ -82,6 +84,9 @@ def main():
         print '%d \t %d \t %f \t %f \t %f \t %f \t %f' % \
         (num_feats[i], num_train[i], num_test[i], train_feature_time[i], test_feature_time[i], model_train_time[i], \
          100*jaccard[i], 100*hamming[i])
+         
+    # Print classification report
+    print(classification_report(y_true, y_pred))
         
         
     
