@@ -86,7 +86,7 @@ def main():
          100*jaccard[i], 100*hamming[i])
          
     # Print classification report
-    print(classification_report(y_true, y_pred))
+    print(classification_report(y_true, y_predict))
         
         
     
