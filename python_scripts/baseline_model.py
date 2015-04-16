@@ -45,7 +45,7 @@ def main():
         y_test_raw.append( ast.literal_eval(test[i][0]) )
         
     # Train clasifier and predict keywords
-    num_feats = [50]
+    num_feats = [50, 100, 200, 500, 1000]
     #num_feats = [50, 100, 200, 500, 1000, tag_info.shape[0]]
 
     num_train = []
