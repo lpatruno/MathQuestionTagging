@@ -81,7 +81,7 @@ def main():
     # Print report    
     print 'n  num_train  num_test  train_feat_time  test_feat_time  model_time  jaccard  hamming_loss \n'   
     for i in range( len(num_feats)):
-        print '%d \t %d \t %f \t %f \t %f \t %f \t %f' % \
+        print '%d \t %d \t %d \t %f \t %f \t %f \t %f \t %f' % \
         (num_feats[i], num_train[i], num_test[i], train_feature_time[i], test_feature_time[i], model_train_time[i], \
          100*jaccard[i], 100*hamming[i])
          
