@@ -3,3 +3,9 @@ Order in which to run scripts:
   1. python separate_tagged_untagged_content.py
   2. python extract_question_tag_info.py 
   3. python find_keywords_in_text.py 
+  4. python top_latex_by_keyword.py
+  5. python split_train_test_data.py
+
+These files that are created are then used in the baseline_feature_extractor script to create the baseline model.
+
+Otherwise, the files are then analyzed in the iPython notebook files in the .. directory.
